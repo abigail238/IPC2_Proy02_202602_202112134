@@ -1,11 +1,11 @@
 using IPC2_Proy02_202602_202112134.Models;
 
-namespace IPC2_Proy02_202602_202112134.Estrucutras
+namespace IPC2_Proy02_202602_202112134.Estructuras
 {
-    public calss NodoLibro
+    public class NodoLibro
     {
         // libro que se encuentra almacenado en este nodo 
-        public Libro libro { get; set; }
+        public Libro Libro { get; set; }
 
     //nodo hijo izquierdo 
     public NodoLibro? Izquierdo { get; set; }
@@ -16,7 +16,7 @@ namespace IPC2_Proy02_202602_202112134.Estrucutras
     //constructor del nodo 
     public NodoLibro(Libro libro)
     {
-        libro = libro;
+        Libro = libro;
 
         Izquierdo = null;
         Derecho = null;
