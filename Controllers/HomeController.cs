@@ -60,6 +60,44 @@ public class HomeController(Catalogo catalogo, GeneradorGraphviz graficos) : Con
                 ? "Categoría agregada." : "Revisa el nombre: debe ser único y su padre debe existir.");
     }
 
+    [HttpGet]
+    public IActionResult RegistrarLibro() => View();
+
+    [HttpPost]
+    public IActionResult RegistrarLibro(int isbn, string? titulo, string? autor, string? categoria)
+    {
+        if (isbn <= 0 || !ModelState.IsValid)
+            ModelState.AddModelError("", "El ISBN debe ser un número entero positivo de hasta 2147483647.");
+        if (string.IsNullOrWhiteSpace(titulo))
+            ModelState.AddModelError("", "El título es obligatorio.");
+        if (string.IsNullOrWhiteSpace(autor))
+            ModelState.AddModelError("", "El autor es obligatorio.");
+        if (string.IsNullOrWhiteSpace(categoria))
+            ModelState.AddModelError("", "La categoría es obligatoria.");
+
+        if (!ModelState.IsValid) return View();
+
+        // Validar e insertar bajo el mismo candado evita registros simultáneos duplicados.
+        lock (catalogo.Candado)
+        {
+            if (catalogo.Libros.Buscar(isbn) != null)
+                ModelState.AddModelError("", $"Ya existe un libro con ISBN {isbn}.");
+            if (catalogo.Categorias.Buscar(categoria!.Trim()) == null)
+                ModelState.AddModelError("", "La categoría no existe. Agrégala antes de registrar el libro.");
+            if (!ModelState.IsValid) return View();
+
+            string mensaje = catalogo.Registrar(isbn, titulo, autor, categoria.Trim());
+            if (mensaje != "Libro registrado.")
+            {
+                ModelState.AddModelError("", mensaje);
+                return View();
+            }
+        }
+
+        TempData["RegistroExitoso"] = $"Libro '{titulo!.Trim()}' con ISBN {isbn} registrado correctamente.";
+        return RedirectToAction(nameof(RegistrarLibro));
+    }
+
     [HttpPost]
     public IActionResult Registrar(long isbn, string? titulo, string? autor, string? categoria)
     {

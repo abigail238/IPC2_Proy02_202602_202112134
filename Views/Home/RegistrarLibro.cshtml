@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Registrar un nuevo libro";
+}
+
+<h1>Registrar un nuevo libro</h1>
+
+<div class="card formulario-registro">
+    @if (TempData["RegistroExitoso"] is string mensaje)
+    {
+        <div class="alert alert-success" role="status">@mensaje</div>
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+    }
+
+    <form asp-controller="Home" asp-action="RegistrarLibro" method="post">
+        <div class="mb-3">
+            <label for="isbn" class="form-label">ISBN</label>
+            @Html.TextBox("isbn", null, new { type = "number", min = "1", max = "2147483647", step = "1", required = "required", @class = "form-control" })
+        </div>
+        <div class="mb-3">
+            <label for="titulo" class="form-label">Título</label>
+            @Html.TextBox("titulo", null, new { required = "required", @class = "form-control" })
+        </div>
+        <div class="mb-3">
+            <label for="autor" class="form-label">Autor</label>
+            @Html.TextBox("autor", null, new { required = "required", @class = "form-control" })
+        </div>
+        <div class="mb-3">
+            <label for="categoria" class="form-label">Categoría</label>
+            @Html.TextBox("categoria", null, new { required = "required", @class = "form-control", aria_describedby = "ayuda-categoria" })
+            <p id="ayuda-categoria" class="form-text">Escribe el nombre de una categoría existente.</p>
+        </div>
+        <button class="btn" type="submit">Registrar</button>
+    </form>
+</div>

@@ -1,115 +1,93 @@
+﻿@model PaginaCatalogo
 @{
-    ViewData["Title"] = "Gestión de Catálogo y Libros";
+    ViewData["Title"] = "Gestión del catálogo";
 }
-
-<div class="container py-4">
-    <h2 class="mb-4 text-primary fw-bold">Panel de Gestión de Catálogo y Libros</h2>
->
-    @if (TempData["Exito"] != null)
+<h1>Gestión del catálogo y libros</h1>
+<div id="resultado" role="status">
+    @if (!string.IsNullOrEmpty(Model.Mensaje))
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Exito"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <p class="alert alert-info">@Model.Mensaje</p>
     }
-    @if (TempData["Error"] != null)
+    @if (Model.Resultado != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+        <article class="card">
+            <h2>Libro encontrado</h2>
+            <p>ISBN: @Model.Resultado.ISBN</p>
+            <p>Título: @Model.Resultado.Titulo · Autor: @Model.Resultado.Autor</p>
+            <p>Categoría: @Model.Resultado.Categoria</p>
+        </article>
     }
-    @if (ViewBag.Resultado != null)
-    {
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <strong>Resultado:</strong> @ViewBag.Resultado
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-dark text-white fw-bold">Agregar Nueva Categoría</div>
-                <div class="card-body">
-                    <form asp-action="AgregarCategoria" method="post">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre de Categoría</label>
-                            <input type="text" name="nombre" class="form-control" required />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Categoría Padre (Opcional)</label>
-                            <input type="text" name="padre" class="form-control" placeholder="Dejar vacío si es principal" />
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Guardar Categoría</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100">
-                <div class="card-header bg-dark text-white fw-bold">Registrar Nuevo Libro</div>
-                <div class="card-body">
-                    <form asp-action="RegistrarLibro" method="post">
-                        <div class="row">
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label">ISBN</label>
-                                <input type="number" name="isbn" class="form-control" required />
-                            </div>
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label">Categoría</label>
-                                <input type="text" name="categoria" class="form-control" required />
-                            </div>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label">Título</label>
-                            <input type="text" name="titulo" class="form-control" required />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Autor</label>
-                            <input type="text" name="autor" class="form-control" required />
-                        </div>
-                        <button type="submit" class="btn btn-success w-100">Registrar Libro</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-secondary text-white fw-bold">Consultas y Operaciones por ISBN</div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <form asp-action="ConsultarISBN" method="get" class="d-flex gap-2">
-                                <input type="hidden" name="tipo" value="buscar" />
-                                <input type="number" name="isbn" class="form-control" placeholder="Buscar por ISBN" required />
-                                <button type="submit" class="btn btn-outline-primary">Buscar</button>
-                            </form>
-                        </div>
-                        <div class="col-md-4">
-                            <form asp-action="EliminarLibro" method="post" class="d-flex gap-2">
-                                <input type="number" name="isbn" class="form-control" placeholder="ISBN a eliminar" required />
-                                <button type="submit" class="btn btn-outline-danger">Eliminar</button>
-                            </form>
-                        </div>
-                        <div class="col-md-4 d-flex gap-2">
-                            <a asp-action="ConsultarISBN" asp-route-tipo="menor" class="btn btn-warning flex-fill">Ver Menor ISBN</a>
-                            <a asp-action="ConsultarISBN" asp-route-tipo="mayor" class="btn btn-info flex-fill text-white">Ver Mayor ISBN</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light fw-bold">Estructura Jerárquica del Catálogo</div>
-                <div class="card-body">
-                    <pre class="bg-dark text-warning p-3 rounded">@ViewBag.EstructuraCategorias</pre>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
+<section class="card" id="inicializar">
+    <h2>Inicializar el Sistema</h2>
+    <form asp-action="InicializarSistema" method="post">
+        <p>Esta operación vacía el catálogo actual.</p>
+        <label class="d-block mb-3"><input type="checkbox" name="confirmar" value="true" required /> Confirmo que deseo vaciar el catálogo.</label>
+        <button class="btn" type="submit">Inicializar el Sistema</button>
+    </form>
+</section>
+<section class="card" id="cargar">
+    <h2>Cargar Archivo XML de Entrada</h2>
+    <form asp-action="Cargar" method="post" enctype="multipart/form-data">
+        <label for="archivo" class="form-label">Archivo XML (hasta 25 MB)</label>
+        <input id="archivo" name="archivo" type="file" accept=".xml" class="form-control mb-3" required />
+        <button class="btn" type="submit">Cargar XML</button>
+    </form>
+</section>
+<section class="card" id="estructura">
+    <h2>Mostrar Estructura de Categorías</h2>
+    <pre>@(string.IsNullOrWhiteSpace(Model.Estructura) ? "No hay categorías registradas." : Model.Estructura)</pre>
+    <a class="btn align-self-start" asp-action="Reporte" asp-route-tipo="categorias">Ver gráfico de categorías</a>
+</section>
+<section class="card" id="graphviz">
+    <h2>Mostrar Libros de una Categoría (Graphviz)</h2>
+    <form asp-action="Reporte" method="get">
+        <input type="hidden" name="tipo" value="libros" />
+        <label for="categoria-reporte" class="form-label">Categoría</label>
+        <input id="categoria-reporte" name="categoria" class="form-control mb-3" required />
+        <button class="btn" type="submit">Generar gráfico</button>
+        <button class="btn" type="submit" name="descargar" value="true">Descargar DOT</button>
+    </form>
+</section>
+<section class="card" id="agregar-categoria">
+    <h2>Agregar una Categoría</h2>
+    <form asp-action="AgregarCategoria" method="post">
+        <label for="nombre" class="form-label">Nombre de categoría</label>
+        <input id="nombre" name="nombre" class="form-control mb-3" required />
+        <label for="padre" class="form-label">Categoría padre (opcional)</label>
+        <input id="padre" name="padre" class="form-control mb-3" placeholder="Dejar vacío si es principal" />
+        <button class="btn" type="submit">Guardar categoría</button>
+    </form>
+</section>
+<section class="card" id="registrar">
+    <h2>Registrar un nuevo libro</h2>
+    <form asp-action="Registrar" method="post">
+        <label for="isbn-registro" class="form-label">ISBN</label>
+        <input id="isbn-registro" name="isbn" type="number" min="1" step="1" class="form-control mb-3" required />
+        <label for="titulo" class="form-label">Título</label>
+        <input id="titulo" name="titulo" class="form-control mb-3" required />
+        <label for="autor" class="form-label">Autor</label>
+        <input id="autor" name="autor" class="form-control mb-3" required />
+        <label for="categoria-libro" class="form-label">Categoría</label>
+        <input id="categoria-libro" name="categoria" class="form-control mb-3" required />
+        <button class="btn" type="submit">Registrar libro</button>
+    </form>
+</section>
+<section class="card" id="eliminar">
+    <h2>Eliminar un Libro</h2>
+    <form asp-action="Eliminar" method="post">
+        <label for="isbn-eliminar" class="form-label">ISBN del libro</label>
+        <input id="isbn-eliminar" name="isbn" type="number" min="1" step="1" class="form-control mb-3" required />
+        <button class="btn" type="submit">Eliminar libro</button>
+    </form>
+</section>
+<section class="card" id="buscar">
+    <h2>Buscar Libro por ISBN</h2>
+    <form asp-action="Index" method="get">
+        <label for="isbn-buscar" class="form-label">ISBN del libro</label>
+        <input id="isbn-buscar" name="isbn" type="number" min="1" step="1" class="form-control mb-3" required />
+        <button class="btn" type="submit">Buscar</button>
+        <a class="btn" asp-action="Index" asp-route-extremo="menor" asp-fragment="resultado">Libro con ISBN Menor</a>
+        <a class="btn" asp-action="Index" asp-route-extremo="mayor" asp-fragment="resultado">Libro con ISBN Mayor</a>
+    </form>
+</section>
