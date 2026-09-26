@@ -1,0 +1,10 @@
+﻿@model IPC2_Proy02_202602_202112134.Estructuras.NodoLibro
+@if (Model.Izquierdo != null)
+{
+    <partial name="_FilasLibros" model="Model.Izquierdo" />
+}
+<tr><td>@Model.Libro.ISBN</td><td>@Model.Libro.Titulo</td><td>@Model.Libro.Autor</td><td>@Model.Libro.Categoria</td></tr>
+@if (Model.Derecho != null)
+{
+    <partial name="_FilasLibros" model="Model.Derecho" />
+}

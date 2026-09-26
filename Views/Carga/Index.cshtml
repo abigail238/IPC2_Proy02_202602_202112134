@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Carga Masiva";
+}
+
+<div class="text-center mt-4">
+    <h2>Carga Masiva de Libros</h2>
+    <p class="text-muted">Selecciona un archivo JSON para poblar la estructura del catálogo.</p>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (ViewBag.Exito != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.Exito
+        </div>
+    }
+
+    <form asp-controller="Carga" asp-action="SubirArchivo" method="post" enctype="multipart/form-data" class="mt-4 col-md-6 offset-md-3">
+        <div class="mb-3">
+            <input class="form-control" type="file" name="archivo" accept=".json,.xml,.csv" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Procesar Archivo</button>
+    </form>
+</div>

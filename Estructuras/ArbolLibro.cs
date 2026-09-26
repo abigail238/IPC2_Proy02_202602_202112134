@@ -1,235 +1,144 @@
 using IPC2_Proy02_202602_202112134.Models;
-namespace IPC2_Proy02_202602_202112134.Estructuras
+
+namespace IPC2_Proy02_202602_202112134.Estructuras;
+
+public delegate void VisitarLibro(Libro libro);
+
+// AVL: conserva el orden del árbol original y evita que se convierta en una cadena.
+public class ArbolLibro
 {
-    public class ArbolLibro
+    private NodoLibro? raiz;
+    public NodoLibro? Raiz => raiz;
+    public int Cantidad { get; private set; }
+    public int Altura => Alto(raiz);
+
+    private static int Alto(NodoLibro? nodo) => nodo?.Altura ?? 0;
+    private static void Actualizar(NodoLibro nodo) =>
+        nodo.Altura = 1 + Math.Max(Alto(nodo.Izquierdo), Alto(nodo.Derecho));
+
+    private static NodoLibro RotarDerecha(NodoLibro nodo)
     {
-        //raiz principa del arbol 
-        private NodoLibro? raiz;
-
-        //constructor
-        public ArbolLibro()
-        {
-            raiz = null;
-
-        }
-
-        //metodo public para insertar un libro 
-        public void Insertar(Libro libro)
-        {
-
-            //si el libro esta vacio el nuevo libro se convierte en la raiz 
-            if (raiz == null)
-            {
-                raiz = new NodoLibro(libro);
-                return;
-            }
-
-            //si ya existe una raiz, buscamos donde colocar el nuevo libro 
-            InsertarRecursivo(raiz, libro);
-        }
-
-        //metodo que busca la posicion correcta 
-        private void InsertarRecursivo(NodoLibro actual, Libro libro) {
-
-            // si el ISBN nuevo es menor, debe ir hacia la izquierda 
-            if (libro.ISBN < actual.Libro.ISBN)
-            {
-                //si no exites nodo izquierdo, colocamos el nuevo libro 
-                if (actual.Izquierdo == null)
-                {
-                    actual.Izquierdo = new NodoLibro(libro);
-                }
-                else
-                {
-                    // si ya existe un nodo izquierdo, seguimos buscando ms abajo 
-                    InsertarRecursivo(actual.Izquierdo, libro);
-                }
-            }
-            //si el ISBN nuevo es mayot, debe ir hacia la derecha
-            else if (libro.ISBN > actual.Libro.ISBN)
-            {
-                //SI NO existe nodo derecho colocamos el nuevo libro aqui 
-                if (actual.Derecho == null)
-                {
-                    actual.Derecho = new NodoLibro(libro);
-                }
-                else
-                {
-                    //si ya existe un nodo derecho, seguimos buscando mas abajo 
-                    InsertarRecursivo(actual.Derecho, libro);
-
-                }
-
-            }
-
-        }
-
-        public Libro? Buscar(int isbn)
-        {
-            return BuscarRecursivo(raiz, isbn);
-        }
-
-        //metodo privado que recorre el arbol buscando el ISBN 
-        private Libro?  BuscarRecursivo(NodoLibro? actual, int isbn)
-        {
-            // si llegamos a un esapcio vacio, significa que el libro no existe 
-            if(actual == null)
-            {
-                return null;
-            }
-
-            //si encontramos el isbn buscado, devolvemos el libro
-            if(isbn == actual.Libro.ISBN)
-            {
-                return actual.Libro;
-            }
-
-            //si el ISBN buscado es menor, buscamos en el lado izquierdo 
-            if(isbn < actual.Libro.ISBN)
-            {
-                return BuscarRecursivo(actual.Izquierdo, isbn);
-
-            }
-
-            //si el ISBN buscado es mayor, buscamos en el lado derecho
-            return BuscarRecursivo(actual.Derecho, isbn);
-        }
-
-        public Libro? ObtenerMenor()
-        {
-            //si no hay raiz, el arbol esta vacion 
-            if(raiz == null)
-            {
-                return null;
-            }
-
-            //empezamos desde la raiz 
-            NodoLibro actual = raiz;
-
-            //mientras exista un nodo a la izquierda, seguimos avanzando hacia ese lado 
-            while(actual.Izquierdo != null)
-            {
-                actual = actual.Izquierdo;
-
-            }
-             //el nodo mas a la izquierda contiene el isbn mas pequenio 
-             return actual.Libro;
-
-        }
-
-        //devuelve el libro con isbn mas grande 
-        public Libro? ObtenerMayor()
-        {
-            // si no hay raiz, el arbol esta vacio
-
-            if(raiz == null)
-            {
-                return null;
-            }
-
-            //emepzamos desde la raiz 
-            NodoLibro actual = raiz; 
-
-            //Mientras exista un nodo a la derecha, seguimos avanzando hacia ese lado 
-            while(actual.Derecho != null)
-            {
-                actual = actual.Derecho;
-            }
-
-            return actual.Libro;
-
-        }
-
-        public void MostrarEnOrden()
-        {
-            RecorrerInOrden(raiz);
-
-        }
-
-        private void RecorrerInOrden(NodoLibro? actual)
-        {
-            if (actual == null)
-            {
-                return;
-            }
-
-            // recorremos primero el lado izquierdo 
-                RecorrerInOrden(actual.Izquierdo);
-
-            //prcesamos el nodo actual
-            Console.WriteLine($"ISBN: {actual.Libro.ISBN}, Titulo: {actual.Libro.Titulo}, Autor: {actual.Libro.Autor}, Categoria: {actual.Libro.Categoria}");
-                RecorrerInOrden(actual.Derecho);
-            
-        }
-
-        //Eliminar libro 
-        public void Eliminar(int isbn)
-        {
-            raiz = EliminarRecursivo(raiz, isbn);
-        }
-
-        private NodoLibro? EliminarRecursivo(NodoLibro? actual, int isbn)
-        {
-            //si llegamos a null, significa que el isbn no existe 
-            if(actual == null)
-            {
-                return null;
-            }
-            //si el isbn buscado es menor, buscamos en el lado izquierdo
-
-            if (isbn < actual.Libro.ISBN)
-            {
-                actual.Izquierdo = EliminarRecursivo(actual.Izquierdo, isbn);
-            }
-
-            else if (isbn > actual.Libro.ISBN)
-            {
-                actual.Derecho = EliminarRecursivo(actual.Derecho, isbn);
-            }
-
-            else
-            {
-                //caso 1, cuando el nodo tiene hijo izquierdo 
-                if(actual.Izquierdo == null)
-                {
-                    return actual.Derecho;
-                }
-                //caso 2: cuando el nodo tiene hijo derecho 
-                if(actual.Derecho == null)
-                {
-                    return actual.Izquierdo;
-                }
-
-                //caso 3: cuando el nodo tiene dos hijos
-                
-                //buscamos el nodo con isbn mas pequenio del subarbol derecho 
-                NodoLibro sucesor = ObtenerNodoMenor(actual.Derecho);
-
-                //copiamos el libro del sucesor al nodo actual 
-
-                actual.Libro = sucesor.Libro;
-
-                //eliminamos el sucesor original 
-                actual.Derecho = EliminarRecursivo(actual.Derecho, sucesor.Libro.ISBN);
-
-            }
-
-            return actual;
-        }
-
-        private NodoLibro ObtenerNodoMenor(NodoLibro actual)
-        {
-            while(actual.Izquierdo != null)
-            {
-                actual = actual.Izquierdo;
-
-            }
-            return actual;
-        }
+        NodoLibro nuevaRaiz = nodo.Izquierdo!;
+        nodo.Izquierdo = nuevaRaiz.Derecho;
+        nuevaRaiz.Derecho = nodo;
+        Actualizar(nodo);
+        Actualizar(nuevaRaiz);
+        return nuevaRaiz;
     }
+
+    private static NodoLibro RotarIzquierda(NodoLibro nodo)
+    {
+        NodoLibro nuevaRaiz = nodo.Derecho!;
+        nodo.Derecho = nuevaRaiz.Izquierdo;
+        nuevaRaiz.Izquierdo = nodo;
+        Actualizar(nodo);
+        Actualizar(nuevaRaiz);
+        return nuevaRaiz;
+    }
+
+    private static NodoLibro Equilibrar(NodoLibro nodo)
+    {
+        Actualizar(nodo);
+        int balance = Alto(nodo.Izquierdo) - Alto(nodo.Derecho);
+        if (balance > 1)
+        {
+            if (Alto(nodo.Izquierdo!.Izquierdo) < Alto(nodo.Izquierdo.Derecho))
+                nodo.Izquierdo = RotarIzquierda(nodo.Izquierdo);
+            return RotarDerecha(nodo);
+        }
+        if (balance < -1)
+        {
+            if (Alto(nodo.Derecho!.Derecho) < Alto(nodo.Derecho.Izquierdo))
+                nodo.Derecho = RotarDerecha(nodo.Derecho);
+            return RotarIzquierda(nodo);
+        }
+        return nodo;
+    }
+
+    public bool Insertar(Libro libro)
+    {
+        bool agregado = false;
+        raiz = InsertarRecursivo(raiz, libro, ref agregado);
+        if (agregado) Cantidad++;
+        return agregado;
+    }
+
+    private static NodoLibro InsertarRecursivo(NodoLibro? nodo, Libro libro, ref bool agregado)
+    {
+        if (nodo == null) { agregado = true; return new NodoLibro(libro); }
+        if (libro.ISBN < nodo.Libro.ISBN)
+            nodo.Izquierdo = InsertarRecursivo(nodo.Izquierdo, libro, ref agregado);
+        else if (libro.ISBN > nodo.Libro.ISBN)
+            nodo.Derecho = InsertarRecursivo(nodo.Derecho, libro, ref agregado);
+        else return nodo; // El ISBN es único: nunca reemplazamos otro libro.
+        return Equilibrar(nodo);
+    }
+
+    public Libro? Buscar(long isbn)
+    {
+        NodoLibro? actual = raiz;
+        while (actual != null)
+        {
+            if (isbn == actual.Libro.ISBN) return actual.Libro;
+            actual = isbn < actual.Libro.ISBN ? actual.Izquierdo : actual.Derecho;
+        }
+        return null;
+    }
+
+    public Libro? ObtenerMenor()
+    {
+        NodoLibro? actual = raiz;
+        if (actual == null) return null;
+        while (actual.Izquierdo != null) actual = actual.Izquierdo;
+        return actual.Libro;
+    }
+
+    public Libro? ObtenerMayor()
+    {
+        NodoLibro? actual = raiz;
+        if (actual == null) return null;
+        while (actual.Derecho != null) actual = actual.Derecho;
+        return actual.Libro;
+    }
+
+    public bool Eliminar(long isbn)
+    {
+        bool eliminado = false;
+        raiz = EliminarRecursivo(raiz, isbn, ref eliminado);
+        if (eliminado) Cantidad--;
+        return eliminado;
+    }
+
+    private static NodoLibro? EliminarRecursivo(NodoLibro? nodo, long isbn, ref bool eliminado)
+    {
+        if (nodo == null) return null;
+        if (isbn < nodo.Libro.ISBN)
+            nodo.Izquierdo = EliminarRecursivo(nodo.Izquierdo, isbn, ref eliminado);
+        else if (isbn > nodo.Libro.ISBN)
+            nodo.Derecho = EliminarRecursivo(nodo.Derecho, isbn, ref eliminado);
+        else
+        {
+            eliminado = true;
+            if (nodo.Izquierdo == null) return nodo.Derecho;
+            if (nodo.Derecho == null) return nodo.Izquierdo;
+            NodoLibro sucesor = nodo.Derecho;
+            while (sucesor.Izquierdo != null) sucesor = sucesor.Izquierdo;
+            nodo.Libro = sucesor.Libro;
+            nodo.Derecho = EliminarRecursivo(nodo.Derecho, sucesor.Libro.ISBN, ref eliminado);
+        }
+        return Equilibrar(nodo);
+    }
+
+    // La acción recibe cada libro en orden, sin crear List ni arreglos de libros.
+    public void RecorrerEnOrden(VisitarLibro visitar) => Recorrer(raiz, visitar);
+    private static void Recorrer(NodoLibro? nodo, VisitarLibro visitar)
+    {
+        if (nodo == null) return;
+        Recorrer(nodo.Izquierdo, visitar);
+        visitar(nodo.Libro);
+        Recorrer(nodo.Derecho, visitar);
+    }
+
+    public void MostrarEnOrden() => RecorrerEnOrden(libro =>
+        Console.WriteLine($"ISBN: {libro.ISBN}, Titulo: {libro.Titulo}, Autor: {libro.Autor}, Categoria: {libro.Categoria}"));
 }
-
-
-       
-
-    

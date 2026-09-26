@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Reporte Árbol de Categorías";
+}
+
+<div class="container py-4">
+    <h2 class="mb-3 text-primary fw-bold">Reporte Visual: Árbol de Categorías</h2>
+
+    <form method="get" asp-action="ReporteCategorias" class="row g-3 mb-4">
+        <div class="col-md-6">
+            <input type="text" name="subcategoria" class="form-control" 
+                   placeholder="Ingrese nombre de subcategoría para filtrar (dejar vacío para ver todo)" value="@ViewBag.Subcategoria" />
+        </div>
+        <div class="col-md-6">
+            <button type="submit" class="btn btn-primary">Filtrar Subcategoría</button>
+            <a asp-action="ReporteCategorias" class="btn btn-secondary">Ver Raíz General</a>
+        </div>
+    </form>
+
+    <div id="graph" class="p-3 border rounded text-center bg-white shadow-sm" style="overflow: auto; min-height: 300px;"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+<script>
+    var viz = new Viz();
+    var dotCode = `@Html.Raw(ViewBag.CodigoDot)`;
+    viz.renderSVGElement(dotCode)
+        .then(function (element) {
+            document.getElementById('graph').appendChild(element);
+        })
+        .catch(function (error) { 
+            console.error(error); 
+        });
+</script>

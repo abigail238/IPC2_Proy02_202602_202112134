@@ -1,0 +1,21 @@
+@inject IConfiguration Configuracion
+@{
+    ViewData["Title"] = "Ayuda";
+}
+<h1>Ayuda</h1>
+<h2 class="h4">Información del estudiante</h2>
+<p>Nombre: @(Configuracion["Estudiante:Nombre"] ?? "Pendiente de completar")<br />
+Carné: @(Configuracion["Estudiante:Carne"] ?? "202112134")<br />
+Curso: Introducción a la Programación y Computación 2</p>
+<h2 class="h4">Cómo utilizar el catálogo</h2>
+<ol>
+    <li>Carga un XML o crea una categoría principal dejando vacío el padre.</li>
+    <li>Agrega subcategorías indicando el nombre de una categoría existente como padre.</li>
+    <li>Registra libros con ISBN único, título, autor y categoría existente.</li>
+    <li>Consulta un ISBN, los extremos del catálogo o filtra por categoría y título.</li>
+    <li>Genera un reporte de categorías o de los libros de una categoría.</li>
+    <li>Para empezar de nuevo, confirma la opción de vaciar el catálogo.</li>
+</ol>
+<p>Los XML se cargan de forma incremental. La aplicación informa cuántos registros se agregaron y cuántos se omitieron.</p>
+<p>La información se almacena en memoria: al detener la aplicación se pierde el catálogo cargado.</p>
+

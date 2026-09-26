@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<config>
+
+	<listaCategorias>
+
+		<categoria>Ciencia</categoria>
+
+		<categoria padre="Ciencia">
+			Fisica
+		</categoria>
+
+		<categoria padre="Ciencia">
+			Quimica
+		</categoria>
+
+		<categoria>Tecnologia</categoria>
+
+		<categoria padre="Tecnologia">
+			Programacion
+		</categoria>
+
+		<categoria padre="Tecnologia">
+			Redes
+		</categoria>
+
+	</listaCategorias>
+
+
+	<listaLibros>
+
+		<libro>
+			<ISBN>100</ISBN>
+			<titulo>Fisica Universitaria</titulo>
+			<autor>Sears y Zemansky</autor>
+			<categoria>Fisica</categoria>
+		</libro>
+
+		<libro>
+			<ISBN>500</ISBN>
+			<titulo>Clean Code</titulo>
+			<autor>Robert C. Martin</autor>
+			<categoria>Programacion</categoria>
+		</libro>
+
+		<libro>
+			<ISBN>800</ISBN>
+			<titulo>Redes de Computadoras</titulo>
+			<autor>Andrew Tanenbaum</autor>
+			<categoria>Redes</categoria>
+		</libro>
+
+	</listaLibros>
+
+</config>

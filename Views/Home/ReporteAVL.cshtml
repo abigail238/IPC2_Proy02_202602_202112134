@@ -1,0 +1,23 @@
+@{
+    ViewData["Title"] = "Reporte Árbol AVL de Libros";
+}
+
+<div class="container py-4">
+    <h2 class="mb-3 text-success fw-bold">Reporte Visual: Árbol AVL Balanceado de Libros</h2>
+    
+    <div id="graphAVL" class="p-3 border rounded text-center bg-white shadow-sm" style="overflow: auto; min-height: 300px;"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/viz.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/2.1.2/full.render.js"></script>
+<script>
+    var viz = new Viz();
+    var dotCode = `@Html.Raw(ViewBag.CodigoDot)`;
+    viz.renderSVGElement(dotCode)
+        .then(function (element) {
+            document.getElementById('graphAVL').appendChild(element);
+        })
+        .catch(function (error) { 
+            console.error(error); 
+        });
+</script>

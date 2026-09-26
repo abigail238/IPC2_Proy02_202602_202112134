@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config>
+
+	<listaCategorias>
+
+		<categoria padre="Tecnologia">
+			Seguridad
+		</categoria>
+
+		<categoria padre="Programacion">
+			Python
+		</categoria>
+
+		<categoria>
+			Literatura
+		</categoria>
+
+	</listaCategorias>
+
+
+	<listaLibros>
+
+		<libro>
+			<ISBN>250</ISBN>
+			<titulo>Introduccion a Python</titulo>
+			<autor>John Smith</autor>
+			<categoria>Python</categoria>
+		</libro>
+
+		<libro>
+			<ISBN>600</ISBN>
+			<titulo>Ciberseguridad Basica</titulo>
+			<autor>Maria Lopez</autor>
+			<categoria>Seguridad</categoria>
+		</libro>
+
+		<libro>
+			<ISBN>900</ISBN>
+			<titulo>El Principito</titulo>
+			<autor>Antoine de Saint-Exupery</autor>
+			<categoria>Literatura</categoria>
+		</libro>
+
+	</listaLibros>
+
+</config>

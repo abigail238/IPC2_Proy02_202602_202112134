@@ -1,8 +1,115 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Gestión de Catálogo y Libros";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-4">
+    <h2 class="mb-4 text-primary fw-bold">Panel de Gestión de Catálogo y Libros</h2>
+>
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Exito"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (ViewBag.Resultado != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>Resultado:</strong> @ViewBag.Resultado
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white fw-bold">Agregar Nueva Categoría</div>
+                <div class="card-body">
+                    <form asp-action="AgregarCategoria" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de Categoría</label>
+                            <input type="text" name="nombre" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categoría Padre (Opcional)</label>
+                            <input type="text" name="padre" class="form-control" placeholder="Dejar vacío si es principal" />
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Guardar Categoría</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white fw-bold">Registrar Nuevo Libro</div>
+                <div class="card-body">
+                    <form asp-action="RegistrarLibro" method="post">
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">ISBN</label>
+                                <input type="number" name="isbn" class="form-control" required />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Categoría</label>
+                                <input type="text" name="categoria" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Título</label>
+                            <input type="text" name="titulo" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Autor</label>
+                            <input type="text" name="autor" class="form-control" required />
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Registrar Libro</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white fw-bold">Consultas y Operaciones por ISBN</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <form asp-action="ConsultarISBN" method="get" class="d-flex gap-2">
+                                <input type="hidden" name="tipo" value="buscar" />
+                                <input type="number" name="isbn" class="form-control" placeholder="Buscar por ISBN" required />
+                                <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <form asp-action="EliminarLibro" method="post" class="d-flex gap-2">
+                                <input type="number" name="isbn" class="form-control" placeholder="ISBN a eliminar" required />
+                                <button type="submit" class="btn btn-outline-danger">Eliminar</button>
+                            </form>
+                        </div>
+                        <div class="col-md-4 d-flex gap-2">
+                            <a asp-action="ConsultarISBN" asp-route-tipo="menor" class="btn btn-warning flex-fill">Ver Menor ISBN</a>
+                            <a asp-action="ConsultarISBN" asp-route-tipo="mayor" class="btn btn-info flex-fill text-white">Ver Mayor ISBN</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light fw-bold">Estructura Jerárquica del Catálogo</div>
+                <div class="card-body">
+                    <pre class="bg-dark text-warning p-3 rounded">@ViewBag.EstructuraCategorias</pre>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
